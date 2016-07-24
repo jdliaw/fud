@@ -1,0 +1,22 @@
+{
+  "name": "fud",
+  "version": "1.0.0",
+  "description": "We like fud.",
+  "main": "index.js",
+  "scripts": {
+    "test": "build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdliaw/fud.git"
+  },
+  "author": "Jennifer Liaw and Brandon Liu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jdliaw/fud/issues"
+  },
+  "homepage": "https://github.com/jdliaw/fud#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
