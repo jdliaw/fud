@@ -40,6 +40,23 @@ myLayer = L.mapbox.featureLayer({
           'marker-symbol': 'restaurant'
       }
     },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          -73.988200,
+          40.721016
+        ]
+      },
+      properties: {
+          title: "La Margarita",
+          description: '157 Ludlow Street, New York, NY 10002',
+          'marker-size': 'large',
+          'marker-color': '#f75850',
+          'marker-symbol': 'restaurant'
+      }
+    },
   ]
 
 
@@ -55,5 +72,15 @@ myLayer.on('click',function(e) {
     var content = '<div><strong>' + feature.properties.title + '</strong>' +
                   '<p>' + feature.properties.description + '</p></div>';
 
+    map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 15);
     info.innerHTML = content;
 });
+
+
+function changeNY() {
+  map.setView([40.7150, -73.9843], 10);
+}
+
+function changeLA() {
+  map.setView([32.630395, -117.093245], 10);
+}
