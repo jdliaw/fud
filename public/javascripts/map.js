@@ -2,7 +2,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M
   var map = L.mapbox.map('map', 'mapbox.streets')
       .setView([32.630395, -117.093245], 10);
 
-L.mapbox.featureLayer({
+myLayer = L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
         type: 'Point',
@@ -19,3 +19,16 @@ L.mapbox.featureLayer({
         'marker-symbol': 'restaurant'
     }
 }).addTo(map);
+
+var info = document.getElementById('info');
+
+myLayer.on('click',function(e) {
+    // Force the popup closed.
+    // e.layer.closePopup();
+
+    var feature = e.layer.feature;
+    var content = '<div><strong>' + feature.properties.title + '</strong>' +
+                  '<p>' + feature.properties.description + '</p></div>';
+
+    info.innerHTML = content;
+});
