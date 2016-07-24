@@ -1,0 +1,28 @@
+body {
+  height: 100%;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.map {
+  height: 650px;
+}
+
+#map {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+.sidebar {
+  h3 {
+    margin-left: 20px;
+  }
+  #info {
+    margin-left: 20px;
+  }
+}
