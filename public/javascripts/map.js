@@ -1,10 +1,13 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw';
-  var map = L.mapbox.map('map', 'mapbox.streets')
-    .setView([32.630395, -117.093245], 10);
+  var map = L.mapbox.map('map', 'mapbox.streets', {
+    zoomAnimationThreshold: 9
+  }).setView([32.630395, -117.093245], 10);
+
+var zoomFlag = false;
 
 myLayer = L.mapbox.featureLayer({
   type: 'FeatureCollection',
-  features: [ 
+  features: [  
     {
       type: 'Feature',
       geometry: {
@@ -77,10 +80,60 @@ myLayer.on('click',function(e) {
 });
 
 
+//Changes location to New York.
 function changeNY() {
-  map.setView([40.7150, -73.9843], 10);
+  //If current zoom level is already 6, there won't be a change in zoom aka zoomend...
+  if(map.getZoom() === 6) {
+     map.setView([40.7150, -73.9843], 6, {
+        pan: {
+            animate: true,
+            duration: 2
+        },
+        zoom: {
+            animate: true,
+            duration: 2
+        }
+    });
+  }
+  //we want to set the zoom to something small, like 6, so we can properly pan/flyto.
+  else {
+    map.setZoom(6);
+    zoomFlag = true;                                    //zoomflag used to only handle zooms when we click this button.
+    map.on("zoomend", zoomHandler);                     //on end of zooming in/out, we'll pan to new york.
+  }
+}
+
+
+function zoomHandler(e) {
+  console.log(e);
+  if(!zoomFlag) {
+    return;
+  }
+  else {
+     map.setView([40.7150, -73.9843], 6, {
+        pan: {
+            animate: true,
+            duration: 2
+        },
+        zoom: {
+            animate: true,
+            duration: 2
+        }
+    });
+  }
+  zoomFlag = false;
 }
 
 function changeLA() {
+
   map.setView([32.630395, -117.093245], 10);
 }
+
+
+
+
+
+
+
+
+
