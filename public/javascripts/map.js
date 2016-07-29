@@ -83,8 +83,21 @@ myLayer.on('click',function(e) {
 //Changes location to New York.
 function changeNY() {
   //If current zoom level is already 6, there won't be a change in zoom aka zoomend...
-  if(map.getZoom() === 6) {
-     map.setView([40.7150, -73.9843], 6, {
+  var nyLoc = [40.7150, -73.9843];
+  changeLocation(nyLoc);
+}
+
+function changeLA() {
+  var laLoc = [32.630395, -117.093245];
+  changeLocation(laLoc);
+}
+
+
+
+function changeLocation(destination) {
+  var initialZoom = 6;
+  if(map.getZoom() === initialZoom) {
+     map.setView(destination, initialZoom, {
         pan: {
             animate: true,
             duration: 2
@@ -95,22 +108,36 @@ function changeNY() {
         }
     });
   }
-  //we want to set the zoom to something small, like 6, so we can properly pan/flyto.
-  else {
-    map.setZoom(6);
-    zoomFlag = true;                                    //zoomflag used to only handle zooms when we click this button.
-    map.on("zoomend", zoomHandler);                     //on end of zooming in/out, we'll pan to new york.
+  //small zoom number not zoomed at all.
+  else if(map.getZoom() <= initialZoom) {
+    map.setView(destination, initialZoom, {
+        pan: {
+            animate: true,
+            duration: 2
+        },
+        zoom: {
+            animate: true,
+            duration: 2
+        }
+    });
   }
+  //when very zoomed in, zoom out then pan
+  else {
+    map.setZoom(initialZoom);
+    zoomFlag = true;                                            //zoomflag used to only handle zooms when we click this button.
+    map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
+      zoomHandler.call(this, e, destination, initialZoom);      //Handles zoom and pan
+    });
+  }  
 }
 
 
-function zoomHandler(e) {
-  console.log(e);
+function zoomHandler(e, loc, zoom) {
   if(!zoomFlag) {
     return;
   }
   else {
-     map.setView([40.7150, -73.9843], 6, {
+     map.setView(loc, zoom, {
         pan: {
             animate: true,
             duration: 2
@@ -123,15 +150,6 @@ function zoomHandler(e) {
   }
   zoomFlag = false;
 }
-
-function changeLA() {
-
-  map.setView([32.630395, -117.093245], 10);
-}
-
-
-
-
 
 
 
