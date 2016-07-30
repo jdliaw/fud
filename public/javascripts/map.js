@@ -3,7 +3,16 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M
     zoomAnimationThreshold: 9
   }).setView([32.630395, -117.093245], 10);
 
-var zoomFlag = false;
+
+var isFinishedZooming = false;
+
+var isFinishedPanning = false;
+
+var nyLoc = [40.7150, -73.9843];
+var laLoc = [32.630395, -117.093245];
+
+var tempDest;
+
 
 myLayer = L.mapbox.featureLayer({
   type: 'FeatureCollection',
@@ -83,19 +92,16 @@ myLayer.on('click',function(e) {
 //Changes location to New York.
 function changeNY() {
   //If current zoom level is already 6, there won't be a change in zoom aka zoomend...
-  var nyLoc = [40.7150, -73.9843];
   changeLocation(nyLoc);
 }
 
 function changeLA() {
-  var laLoc = [32.630395, -117.093245];
   changeLocation(laLoc);
 }
 
-
-
 function changeLocation(destination) {
   var initialZoom = 6;
+  tempDest = destination;
   if(map.getZoom() === initialZoom) {
      map.setView(destination, initialZoom, {
         pan: {
@@ -103,41 +109,31 @@ function changeLocation(destination) {
             duration: 2
         },
         zoom: {
-            animate: true,
-            duration: 2
+            animate: true
         }
     });
   }
+
+/* TESTSEKJAFSKDFJDSAKFLSDAJFKASD SADFKJASDFJSKDAF*/
+
   //small zoom number not zoomed at all.
   else if(map.getZoom() <= initialZoom) {
-    map.setView(destination, initialZoom, {
-        pan: {
-            animate: true,
-            duration: 2
-        },
-        zoom: {
-            animate: true,
-            duration: 2
-        }
-    });
+    zoomedOutPanToZoomIn(destination);
   }
   //when very zoomed in, zoom out then pan
   else {
     map.setZoom(initialZoom);
-    zoomFlag = true;                                            //zoomflag used to only handle zooms when we click this button.
+    isFinishedZooming = true;                                            //zoomflag used to only handle zooms when we click this button.
     map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
       zoomHandler.call(this, e, destination, initialZoom);      //Handles zoom and pan
     });
-  }  
+  }
+
 }
 
-
-function zoomHandler(e, loc, zoom) {
-  if(!zoomFlag) {
-    return;
-  }
-  else {
-     map.setView(loc, zoom, {
+function zoomedOutPanToZoomIn(destination) {
+  //set the view to what we want before changing zoom
+  map.setView(destination, map.getZoom(),{
         pan: {
             animate: true,
             duration: 2
@@ -147,11 +143,47 @@ function zoomHandler(e, loc, zoom) {
             duration: 2
         }
     });
+    isFinishedPanning = true;
+    console.log("before");
+    map.on("moveend", function(e) {
+      endhandler.call(this, e, destination);
+    });
+}
+
+function endhandler(e, destination) {
+  if(!isFinishedPanning) {
+    return;
   }
-  zoomFlag = false;
+  else {
+    destination = tempDest;  
+      map.setZoom(9, {
+        zoom: {
+          animate: true
+        }
+      });
+    }
+    console.log("called");
+    isFinishedPanning = false;
 }
 
 
-
-
-
+function zoomHandler(e, destination, initialZoom) {
+  if(!isFinishedZooming) {
+    return;
+  }
+  else {
+    console.log(destination + " " + tempDest);
+    destination = tempDest;
+       map.setView(destination, initialZoom, {
+          pan: {
+              animate: true,
+              duration: 2
+          },
+          zoom: {
+              animate: true,
+              duration: 2
+          }
+      });
+  }
+  isFinishedZooming = false;
+}
