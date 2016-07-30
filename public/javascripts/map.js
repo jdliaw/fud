@@ -5,6 +5,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M
 
 //Flags used to determine if the map has finished panning/zooming or not, to make sure we only call event handler functions when we want.
 var isFinishedZooming = false;
+var isFinishedZoomingAndPanning = false;
 var isFinishedPanning = false;
 
 //Currently just the locations of NY and LA to pan to.
@@ -105,48 +106,50 @@ function changeLocation(destination) {
   tempDest = destination;
   var curZoom = map.getZoom();
 
-  //The case if our current zoom is the same as our default zoom.
-  var zoomLevelSameAsDefaultZoom = (curZoom === initialZoom);
-  var curZoomSmallerThanDefaultZoom = (curZoom <= initialZoom);
-  if(zoomLevelSameAsDefaultZoom) {
-     map.setView(destination, initialZoom, {
-        pan: {
-            animate: true,
-            duration: 2
-        },
-        zoom: {
-            animate: true
-        }
-    });
-  }
+  //boolean values for handling pan/zoom based off if we're the same zoom, more zoomed in, or more zoomed out.
+  var isCurrentlyVeryZoomedOut = (curZoom <= initialZoom);
 
-  //The case if the current zoom is small (very zoomed out)
-  else if(curZoomSmallerThanDefaultZoom) {
-    zoomOut_PanTo_ZoomIn(destination);
+  //The case if the current zoom level is less than or equal to default zoom. That is, the view is quite zoomed out.
+  if(isCurrentlyVeryZoomedOut) {
+    zoomedOut_PanTo_ZoomIn(destination);
   }
   //The case if the current zoom is large (very zoomed in)
   else {
-    map.setZoom(initialZoom);
-    isFinishedZooming = true;                                   //zoomflag used to only handle zooms when we click this button.
-    map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
-      panToAfterZoom.call(this, e, destination, initialZoom);      //Handles zoom and pan
-    });
+    //zoom out to our default panning zoom
+    zoomedIn_ZoomOut_PanTo(initialZoom);
+    thenZoomIn();
   }
 
 }
 
-function zoomOut_PanTo_ZoomIn(destination) {
-  //set the view to what we want before changing zoom
-  map.setView(destination, map.getZoom(),{
-    pan: {
-      animate: true,
-      duration: 2
-    },
-    zoom: {
-        animate: true,
-        duration: 2
-    }
+function zoomedIn_ZoomOut_PanTo(initialZoom) {
+  map.setZoom(initialZoom);
+  isFinishedZooming = true;                                   //zoomflag used to only handle zooms when we click this button.
+  isFinishedZoomingAndPanning = false;
+  map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
+    panToAfterZoom.call(this, e, tempDest, initialZoom);   //Handles zoom and pan
+    isFinishedZoomingAndPanning = true;
   });
+
+}
+
+/* Here is the start of a working version*/
+function thenZoomIn() {
+  console.log("called");
+  if(!isFinishedZoomingAndPanning) {
+    setTimeout(thenZoomIn, 2300);
+  }
+  else {
+    map.setZoom(11);
+  }
+}
+
+
+//Function zoom is greater than or equal to default zoom.
+function zoomedOut_PanTo_ZoomIn(destination) {
+  //set the view to what we want before changing zoom
+  setMapView(tempDest, map.getZoom());
+  
   //Now we know that we've finished panning, so we can zoom in
   isFinishedPanning = true;
   //moveend --> can zoom in
@@ -161,13 +164,12 @@ function zoomInAfterPan(e, destination) {
   }
   //set zoom levels after panning is finished
   else { 
-    map.setZoom(9, {
+    map.setZoom(14, {
       zoom: {
         animate: true
       }
     });
   }
-  console.log("called");
   isFinishedPanning = false;
 }
 
@@ -178,16 +180,21 @@ function panToAfterZoom(e, destination, initialZoom) {
   }
   //pan to destination after zoom has been set.
   else {
-      map.setView(tempDest, initialZoom, {
-        pan: {
-            animate: true,
-            duration: 2
-        },
-        zoom: {
-            animate: true,
-            duration: 2
-        }
-    });
+    setMapView(tempDest, initialZoom);
   }
   isFinishedZooming = false;
 }
+
+function setMapView(destination, zoom) {
+  map.setView(destination, zoom,{
+    pan: {
+      animate: true,
+      duration: 2
+    },
+    zoom: {
+        animate: true,
+        duration: 2
+    }
+  });
+}
+
