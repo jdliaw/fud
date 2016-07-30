@@ -10,10 +10,14 @@ var isFinishedPanning = false;
 
 //Currently just the locations of NY and LA to pan to.
 var nyLoc = [40.7150, -73.9843];
-var laLoc = [32.630395, -117.093245];
+var laLoc = [34.0689, -118.4452];
 
 //tempDest is a variable that's used to hold the actual value of what we wish to pan to, since async functions and event handlers absoltely blow
+//default animation levels
 var tempDest;
+var panningZoomLevel = 5;
+var endZoomLevel = 12;
+var dur = 2;
 
 //Generating map...
 myLayer = L.mapbox.featureLayer({
@@ -71,6 +75,23 @@ myLayer = L.mapbox.featureLayer({
           'marker-symbol': 'restaurant'
       }
     },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          -118.4503263,
+          34.0713948
+        ]
+      },
+      properties: {
+          title: "Bruin Plate Residential Restaurant",
+          description: '350 Charles E Young Drive West, Los Angeles, CA 90095',
+          'marker-size': 'large',
+          'marker-color': '#f75850',
+          'marker-symbol': 'restaurant'
+      }
+    },
   ]
 
 
@@ -96,84 +117,91 @@ function changeNY() {
   changeLocation(nyLoc);
 }
 
+//Changes location to Los Angeles.
 function changeLA() {
   changeLocation(laLoc);
 }
 
+/*Function called to change location to a different city. This is essentially equivalent to a janky version of flyTo() from mapbox gl js. */
 function changeLocation(destination) {
+
+  var distanceToDestination = getDistance(destination);
+
+  setAnimationVars(distanceToDestination);
+
   //What our default zoom will be when we pan animations and stuff.
-  var initialZoom = 6;
   tempDest = destination;
   var curZoom = map.getZoom();
 
-  //boolean values for handling pan/zoom based off if we're the same zoom, more zoomed in, or more zoomed out.
-  var isCurrentlyVeryZoomedOut = (curZoom <= initialZoom);
-
   //The case if the current zoom level is less than or equal to default zoom. That is, the view is quite zoomed out.
+  var isCurrentlyVeryZoomedOut = (curZoom <= panningZoomLevel);
   if(isCurrentlyVeryZoomedOut) {
-    zoomedOut_PanTo_ZoomIn(destination);
+    //zoomed out -> pan to -> zoom in
+    zoomedOut_PanTo_ZoomIn(tempDest);
   }
   //The case if the current zoom is large (very zoomed in)
   else {
-    //zoom out to our default panning zoom
-    zoomedIn_ZoomOut_PanTo(initialZoom);
-    thenZoomIn();
+    //zoomed in -> zoom out -> panTo -> zoom in
+    zoomedIn_ZoomOut_PanTo_ZoomIn();
+
   }
 
 }
 
-function zoomedIn_ZoomOut_PanTo(initialZoom) {
-  map.setZoom(initialZoom);
+/* This function is called when we are currently zoomed in. First it zooms out, then it pans to location. Calls a zoom in function after. */
+function zoomedIn_ZoomOut_PanTo_ZoomIn() {
+  map.setZoom(panningZoomLevel);
   isFinishedZooming = true;                                   //zoomflag used to only handle zooms when we click this button.
-  isFinishedZoomingAndPanning = false;
+  isFinishedZoomingAndPanning = false;                        //flag also used to check if done zooming and panning
   map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
-    panToAfterZoom.call(this, e, tempDest, initialZoom);   //Handles zoom and pan
+    panToAfterZoom.call(this, e, tempDest, panningZoomLevel); //Handles zoom and pan
     isFinishedZoomingAndPanning = true;
   });
 
+  thenZoomIn();
 }
 
-/* Here is the start of a working version*/
+//Call this function after we zoom out, panTo location, then want to zoom in. (Fly to) Must timeout a certain time b/c asynchronous reasons.
 function thenZoomIn() {
-  console.log("called");
+  //Wait until the we are done zooming and panning. Need the timeout because it's in response to something that is already an event handler function.
   if(!isFinishedZoomingAndPanning) {
-    setTimeout(thenZoomIn, 2300);
+    setTimeout(thenZoomIn, 2350);
   }
+  //Now that we've waited, we can pan!
   else {
-    map.setZoom(11);
+    map.setZoom(endZoomLevel);
   }
 }
 
 
-//Function zoom is greater than or equal to default zoom.
-function zoomedOut_PanTo_ZoomIn(destination) {
+/* 
+  Function is called when zoom is greater than or equal to default zoom.
+  First pan to our destination, when done panning, then zoom in.
+*/
+function zoomedOut_PanTo_ZoomIn() {
   //set the view to what we want before changing zoom
   setMapView(tempDest, map.getZoom());
   
   //Now we know that we've finished panning, so we can zoom in
   isFinishedPanning = true;
-  //moveend --> can zoom in
   map.on("moveend", function(e) {
-    zoomInAfterPan.call(this, e, destination);
+    zoomInAfterPan.call(this, e, tempDest);
   });
 }
 
+/*Event handler to zoom in after we pan*/
 function zoomInAfterPan(e, destination) {
   if(!isFinishedPanning) {
     return;
   }
   //set zoom levels after panning is finished
   else { 
-    map.setZoom(14, {
-      zoom: {
-        animate: true
-      }
-    });
+    map.setZoom(endZoomLevel);
   }
   isFinishedPanning = false;
 }
 
-
+/* Function that is called to pan to a location after zooming (out)*/
 function panToAfterZoom(e, destination, initialZoom) {
   if(!isFinishedZooming) {
     return;
@@ -185,16 +213,43 @@ function panToAfterZoom(e, destination, initialZoom) {
   isFinishedZooming = false;
 }
 
+//function to set map view with panning animation.
 function setMapView(destination, zoom) {
   map.setView(destination, zoom,{
     pan: {
       animate: true,
-      duration: 2
+      duration: dur
     },
     zoom: {
         animate: true,
-        duration: 2
     }
   });
+}
+
+function getDistance(destination) {
+  var ctr = map.getCenter();
+  var dest = destination;
+  console.log("destination: " + dest[0] + ", " + dest[1]);
+  console.log(ctr.lat + " " + ctr.lng);
+  var latDiff = dest[0] - ctr.lat;
+  var lngDiff = dest[1] - ctr.lng;
+  console.log(latDiff);
+  console.log(lngDiff);
+
+  var distance = Math.sqrt((latDiff * latDiff) + (lngDiff * lngDiff));
+  console.log(distance);
+  return distance;
+}
+
+function setAnimationVars(distanceToDestination) {
+  if(distanceToDestination < 1.5) {
+    panningZoomLevel = 10;
+  }
+  else if(distanceToDestination < 5) {
+    panningZoomLevel = 8;
+  }
+  else {
+    panningZoomLevel = 6;
+  }
 }
 
