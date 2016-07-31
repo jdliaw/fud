@@ -14,10 +14,10 @@ var laLoc = [34.0689, -118.4452];
 
 //tempDest is a variable that's used to hold the actual value of what we wish to pan to, since async functions and event handlers absoltely blow
 //default animation levels
-var tempDest;
-var panningZoomLevel = 5;
-var endZoomLevel = 12;
-var dur = 2;
+var tempDest;                     //Variable used to get get our destination because of some callback/async/eventhandler issue I can't solve.
+var panningZoomLevel = 5;         //What level of zoom we use as our default pan.
+var endZoomLevel = 12;            //What level of zoom we use as our default end zoom.
+var dur = 2;                      //Duration of pan. Prob will keep as is.
 
 //Generating map...
 myLayer = L.mapbox.featureLayer({
@@ -93,8 +93,6 @@ myLayer = L.mapbox.featureLayer({
       }
     },
   ]
-
-
 }).addTo(map);
 
 var info = document.getElementById('info');
@@ -107,10 +105,10 @@ myLayer.on('click',function(e) {
     var content = '<div><strong>' + feature.properties.title + '</strong>' +
                   '<p>' + feature.properties.description + '</p></div>';
 
-    map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 15);
+    var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+    map.setView(dest, 15);
     info.innerHTML = content;
 });
-
 
 //Changes location to New York.
 function changeNY() {
