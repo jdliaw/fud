@@ -3,6 +3,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.header {
+  border-bottom: solid grey 1px;
+}
+
 a {
   color: #00B7FF;
 }
@@ -18,11 +22,29 @@ a {
   margin: 0;
 }
 
-.sidebar {
-  h3 {
-    margin-left: 20px;
-  }
-  #info {
-    margin-left: 20px;
+.review {
+  margin-left: 30px;
+  height: 650px;
+  overflow: scroll;
+
+  .description {
+    line-height: 90%;
+    h3 {
+      margin-top: 0;
+    }
+    .address {
+      color: gray;
+    }
+    .rating {
+      color: black;
+      float: right;
+    }
+    .categories {
+      font-style: italic;
+    }
+    .price {
+      float: right;
+      font-style: normal;
+    }
   }
 }
