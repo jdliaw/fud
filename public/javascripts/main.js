@@ -1,5 +1,4 @@
-showTacos = function() {
-  // debugger
+showReview = function(reviewDiv) {
   $('.review.active').removeClass('active');
-  $('#tacos-el-gordo').addClass('active');
+  $('#' + reviewDiv).addClass('active');
 }
