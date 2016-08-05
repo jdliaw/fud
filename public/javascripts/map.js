@@ -22,7 +22,7 @@ var dur = 2;                      //Duration of pan. Prob will keep as is.
 //Generating map...
 myLayer = L.mapbox.featureLayer({
   type: 'FeatureCollection',
-  features: [  
+  features: [
     {
       type: 'Feature',
       geometry: {
@@ -95,7 +95,9 @@ myLayer = L.mapbox.featureLayer({
   ]
 }).addTo(map);
 
-var info = document.getElementById('info');
+// var info = document.getElementById('info');
+var defaultReview = document.getElementById('default');
+var tacos = document.getElementById('tacos-el-gordo');
 //Still generating map...
 myLayer.on('click',function(e) {
     // Force the popup closed.
@@ -105,9 +107,13 @@ myLayer.on('click',function(e) {
     var content = '<div><strong>' + feature.properties.title + '</strong>' +
                   '<p>' + feature.properties.description + '</p></div>';
 
+    if (feature.properties.title === "Tacos El Gordo") {
+      showTacos();
+    }
+
     var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
     map.setView(dest, 15);
-    info.innerHTML = content;
+    // info.innerHTML = content;
 });
 
 //Changes location to New York.
@@ -172,14 +178,14 @@ function thenZoomIn() {
 }
 
 
-/* 
+/*
   Function is called when zoom is greater than or equal to default zoom.
   First pan to our destination, when done panning, then zoom in.
 */
 function zoomedOut_PanTo_ZoomIn() {
   //set the view to what we want before changing zoom
   setMapView(tempDest, map.getZoom());
-  
+
   //Now we know that we've finished panning, so we can zoom in
   isFinishedPanning = true;
   map.on("moveend", function(e) {
@@ -193,7 +199,7 @@ function zoomInAfterPan(e, destination) {
     return;
   }
   //set zoom levels after panning is finished
-  else { 
+  else {
     map.setZoom(endZoomLevel);
   }
   isFinishedPanning = false;

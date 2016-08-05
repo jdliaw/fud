@@ -4,7 +4,14 @@ body {
 }
 
 .header {
-  border-bottom: solid grey 1px;
+  border-bottom: solid gray 1px;
+
+  .destinations {
+    float: right;
+    p {
+      font-style: bold;
+    }
+  }
 }
 
 a {
@@ -22,7 +29,12 @@ a {
   margin: 0;
 }
 
+.review.active {
+  display: block;
+}
+
 .review {
+  display: none;
   margin-left: 30px;
   height: 650px;
   overflow: scroll;
