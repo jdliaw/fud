@@ -6,6 +6,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.nav-row {
+  min-width: 650px;
+}
+
 .nav-bar {
   border-radius: 2px;
   nav {
@@ -86,8 +90,11 @@ body {
   #map {
     position: absolute;
     height: 100%;
-    width: 96%;
+    width: 100%;
     margin: 0;
+    @media only screen and (max-width : 992px) {
+      width: 96%;
+    }
   }
 }
 
