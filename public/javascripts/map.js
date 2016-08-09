@@ -1,7 +1,7 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw';
-  var map = L.mapbox.map('map', 'mapbox.streets', {
-    zoomAnimationThreshold: 9
-  }).setView([32.630395, -117.093245], 10);
+var map = L.mapbox.map('map', 'mapbox.streets', {
+  zoomAnimationThreshold: 9
+}).setView([32.630395, -117.093245], 10);
 
 //Flags used to determine if the map has finished panning/zooming or not, to make sure we only call event handler functions when we want.
 var isFinishedZooming = false;
@@ -20,7 +20,10 @@ var endZoomLevel = 12;            //What level of zoom we use as our default end
 var dur = 2;                      //Duration of pan. Prob will keep as is.
 
 //Generating map...
-myLayer = L.mapbox.featureLayer({
+
+myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
+
+/* myLayer = L.mapbox.featureLayer({
   type: 'FeatureCollection',
   features: [
     {
@@ -95,29 +98,26 @@ myLayer = L.mapbox.featureLayer({
       }
     },
   ]
-}).addTo(map);
-
-// var info = document.getElementById('info');
+}).addTo(map); */
 
 //Still generating map...
-myLayer.on('click',function(e) {
-    // Force the popup closed.
-    // e.layer.closePopup();
+myLayer.on('click', function (e) {
+  // Force the popup closed.
+  // e.layer.closePopup();
 
-    var feature = e.layer.feature;
-    var content = '<div><strong>' + feature.properties.title + '</strong>' +
-                  '<p>' + feature.properties.description + '</p></div>';
+  var feature = e.layer.feature;
+  var content = '<div><strong>' + feature.properties.title + '</strong>' +
+    '<p>' + feature.properties.description + '</p></div>';
 
-    var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
-    showReview(reviewDivId);
+  var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
+  showReview(reviewDivId);
 
-    // if (feature.properties.title === "Tacos El Gordo") {
-    //   showTacos();
-    // }
+  // if (feature.properties.title === "Tacos El Gordo") {
+  //   showTacos();
+  // }
 
-    var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-    map.setView(dest, 15);
-    // info.innerHTML = content;
+  var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+  map.setView(dest, 15);
 });
 
 function searchRestaurants() {
@@ -147,7 +147,7 @@ function changeLocation(destination) {
 
   //The case if the current zoom level is less than or equal to default zoom. That is, the view is quite zoomed out.
   var isCurrentlyVeryZoomedOut = (curZoom <= panningZoomLevel);
-  if(isCurrentlyVeryZoomedOut) {
+  if (isCurrentlyVeryZoomedOut) {
     //zoomed out -> pan to -> zoom in
     zoomedOut_PanTo_ZoomIn(tempDest);
   }
@@ -165,7 +165,7 @@ function zoomedIn_ZoomOut_PanTo_ZoomIn() {
   map.setZoom(panningZoomLevel);
   isFinishedZooming = true;                                   //zoomflag used to only handle zooms when we click this button.
   isFinishedZoomingAndPanning = false;                        //flag also used to check if done zooming and panning
-  map.on("zoomend", function(e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
+  map.on("zoomend", function (e) {                             //http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters || passing in data to event handler function
     panToAfterZoom.call(this, e, tempDest, panningZoomLevel); //Handles zoom and pan
     isFinishedZoomingAndPanning = true;
   });
@@ -176,7 +176,7 @@ function zoomedIn_ZoomOut_PanTo_ZoomIn() {
 //Call this function after we zoom out, panTo location, then want to zoom in. (Fly to) Must timeout a certain time b/c asynchronous reasons.
 function thenZoomIn() {
   //Wait until the we are done zooming and panning. Need the timeout because it's in response to something that is already an event handler function.
-  if(!isFinishedZoomingAndPanning) {
+  if (!isFinishedZoomingAndPanning) {
     setTimeout(thenZoomIn, 2350);
   }
   //Now that we've waited, we can pan!
@@ -196,14 +196,14 @@ function zoomedOut_PanTo_ZoomIn() {
 
   //Now we know that we've finished panning, so we can zoom in
   isFinishedPanning = true;
-  map.on("moveend", function(e) {
+  map.on("moveend", function (e) {
     zoomInAfterPan.call(this, e, tempDest);
   });
 }
 
 /*Event handler to zoom in after we pan*/
 function zoomInAfterPan(e, destination) {
-  if(!isFinishedPanning) {
+  if (!isFinishedPanning) {
     return;
   }
   //set zoom levels after panning is finished
@@ -215,7 +215,7 @@ function zoomInAfterPan(e, destination) {
 
 /* Function that is called to pan to a location after zooming (out)*/
 function panToAfterZoom(e, destination, initialZoom) {
-  if(!isFinishedZooming) {
+  if (!isFinishedZooming) {
     return;
   }
   //pan to destination after zoom has been set.
@@ -227,13 +227,13 @@ function panToAfterZoom(e, destination, initialZoom) {
 
 //function to set map view with panning animation.
 function setMapView(destination, zoom) {
-  map.setView(destination, zoom,{
+  map.setView(destination, zoom, {
     pan: {
       animate: true,
       duration: dur
     },
     zoom: {
-        animate: true,
+      animate: true,
     }
   });
 }
@@ -254,10 +254,10 @@ function getDistance(destination) {
 }
 
 function setAnimationVars(distanceToDestination) {
-  if(distanceToDestination < 1.5) {
+  if (distanceToDestination < 1.5) {
     panningZoomLevel = 10;
   }
-  else if(distanceToDestination < 5) {
+  else if (distanceToDestination < 5) {
     panningZoomLevel = 8;
   }
   else {
