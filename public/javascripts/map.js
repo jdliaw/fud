@@ -35,6 +35,8 @@ myLayer = L.mapbox.featureLayer({
       properties: {
           title: 'Tacos El Gordo',
           description: '689 H Street, Chula Vista, CA 91910',
+          category: 'Mexican',
+          city: 'San Diego',
           'marker-size': 'large',
           'marker-color': '#f75850',
           'marker-symbol': 'restaurant'
@@ -96,8 +98,7 @@ myLayer = L.mapbox.featureLayer({
 }).addTo(map);
 
 // var info = document.getElementById('info');
-var defaultReview = document.getElementById('default');
-var tacos = document.getElementById('tacos-el-gordo');
+
 //Still generating map...
 myLayer.on('click',function(e) {
     // Force the popup closed.
@@ -107,14 +108,21 @@ myLayer.on('click',function(e) {
     var content = '<div><strong>' + feature.properties.title + '</strong>' +
                   '<p>' + feature.properties.description + '</p></div>';
 
-    if (feature.properties.title === "Tacos El Gordo") {
-      showTacos();
-    }
+    var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
+    showReview(reviewDivId);
+
+    // if (feature.properties.title === "Tacos El Gordo") {
+    //   showTacos();
+    // }
 
     var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
     map.setView(dest, 15);
     // info.innerHTML = content;
 });
+
+function searchRestaurants() {
+  showSubNav();
+}
 
 //Changes location to New York.
 function changeNY() {
