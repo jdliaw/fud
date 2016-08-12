@@ -32,7 +32,7 @@ router.get('/add', function(req, res, next) {
 router.post('/add/restaurant', function(req, res, next) {
   console.log("Output of req.body from POST:")
   console.log(req.body);
-  res.send("Thanks for submitting!");
+  res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
 });
 
 module.exports = router;
