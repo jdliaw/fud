@@ -1,0 +1,26 @@
+.input-body {
+    margin-top: 20px;
+}
+
+.input-field {
+    border: none;
+    border: 1px solid lightgray;
+    outline: none;
+    width: 100%;
+    border-radius: 4px;
+    padding: 5px;
+    padding-right: -20px;
+    @media screen and (max-width: 764px) {
+        width: 400px;
+    }
+}
+
+.input-label {
+    margin-bottom: 0px;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+textarea {
+    resize: vertical;
+}
