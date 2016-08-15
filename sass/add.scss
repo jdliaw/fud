@@ -1,5 +1,10 @@
 $light-gray: #D3D3D3;
 
+$gray-dollar-sign: url('/assets/dollar-sign-gray.svg') scroll no-repeat;
+$green-dollar-sign: url('/assets/dollar-sign-green.svg') scroll no-repeat;
+$gray-star: url('/assets/gray-star.svg') scroll no-repeat;
+$yellow-star: url('/assets/yellow-star.svg') scroll no-repeat;
+
 .input-body {
     margin-top: 20px;
 }
@@ -61,3 +66,64 @@ textarea {
         }
     }
 }
+
+@mixin review-checkbox($disabled-background, $selected-background) {
+    .radio-wrapper {
+        overflow: hidden;
+        display: inline-block;
+        font-size: 0;
+        position: relative;
+        vertical-align: middle;
+
+        //Hide input, so we only show label.
+        .radio-input {
+            display: none;
+        }
+
+        .radio-label {
+            margin-bottom: 0px;
+            margin-top: 4px;
+            position: relative;
+            float: right;
+            display: block;
+            text-align: right;
+            width: 22px;
+            height: 20px;
+            background: $disabled-background;
+        }
+        &:hover {
+            .radio-label {
+                &:hover {
+                    background: $selected-background;
+                }
+                &:hover ~ .radio-label {
+                    background: $selected-background;
+                }
+            }
+        }
+    }
+
+    //If checked, keep all the stars on clicked/selected.
+    .radio-input:checked ~ .radio-label {
+        background: $selected-background;
+    }
+
+    //Reset stuff on hover to blank
+    .radio-wrapper:hover .radio-label {
+        background: $disabled-background;
+    }
+}
+
+.rating-div {
+    @include review-checkbox($gray-star, $yellow-star);
+}
+
+.price-div {
+    @include review-checkbox($gray-dollar-sign, $green-dollar-sign);
+
+}
+
+
+
+
+

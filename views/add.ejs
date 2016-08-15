@@ -26,21 +26,33 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="rating" class="col-sm-2 col-form-label input-label">Rating</label>
-                <div class="col-sm-10">
-                    <input type="text" name="rating" class="input-field" id="rating" placeholder="Rating">
-                </div>
-            </div>
-            <div class="form-group row">
                 <label for="category" class="col-sm-2 col-form-label input-label">Category</label>
                 <div class="col-sm-10">
-                    <input type="text" name="category" class="input-field" id="category" placeholder="Category">
+                    <input type="text" name="category" class="input-field" id="category" placeholder="American (New), Tacos, Vegetarian">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="price" class="col-sm-2 col-form-label input-label">Price</label>
-                <div class="col-sm-10">
-                    <input type="text" name="price" class="input-field" id="price" placeholder="Price">
+                <div class="col-sm-10 price-div">
+                    <fieldset class="radio-wrapper" id="price-input">
+                        <input type="radio" class="radio-input" id="price-input-5" name="price-input" value="5"><label for="price-input-5" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="price-input-4" name="price-input" value="4"><label for="price-input-4" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="price-input-3" name="price-input" value="3"><label for="price-input-3" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="price-input-2" name="price-input" value="2"><label for="price-input-2" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="price-input-1" name="price-input" value="1" checked="checked"><label for="price-input-1" class="radio-label"></label>
+                    </fieldset>
+                </div>
+            </div>            
+            <div class="form-group row">
+                <label for="rating" class="col-sm-2 col-form-label input-label"> Rating</label>
+                <div class="col-sm-10 rating-div">
+                    <fieldset class="radio-wrapper" id="rating-input">
+                        <input type="radio" class="radio-input" id="rating-input-5" name="rating-input" value="5"><label for="rating-input-5" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="rating-input-4" name="rating-input" value="4"><label for="rating-input-4" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="rating-input-3" name="rating-input" value="3"><label for="rating-input-3" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="rating-input-2" name="rating-input" value="2"><label for="rating-input-2" class="radio-label"></label>
+                        <input type="radio" class="radio-input" id="rating-input-1" name="rating-input" value="1" checked="checked"><label for="rating-input-1" class="radio-label"></label>
+                    </fieldset>
                 </div>
             </div>
             <div class="form-group row">

@@ -45,3 +45,61 @@ textarea {
     color: black;
     border: 1px solid black;
     border-radius: 2px; }
+
+.rating-div .radio-wrapper {
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+  position: relative;
+  vertical-align: middle; }
+  .rating-div .radio-wrapper .radio-input {
+    display: none; }
+  .rating-div .radio-wrapper .radio-label {
+    margin-bottom: 0px;
+    margin-top: 4px;
+    position: relative;
+    float: right;
+    display: block;
+    text-align: right;
+    width: 22px;
+    height: 20px;
+    background: url("/assets/gray-star.svg") scroll no-repeat; }
+  .rating-div .radio-wrapper:hover .radio-label:hover {
+    background: url("/assets/yellow-star.svg") scroll no-repeat; }
+  .rating-div .radio-wrapper:hover .radio-label:hover ~ .radio-label {
+    background: url("/assets/yellow-star.svg") scroll no-repeat; }
+
+.rating-div .radio-input:checked ~ .radio-label {
+  background: url("/assets/yellow-star.svg") scroll no-repeat; }
+
+.rating-div .radio-wrapper:hover .radio-label {
+  background: url("/assets/gray-star.svg") scroll no-repeat; }
+
+.price-div .radio-wrapper {
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+  position: relative;
+  vertical-align: middle; }
+  .price-div .radio-wrapper .radio-input {
+    display: none; }
+  .price-div .radio-wrapper .radio-label {
+    margin-bottom: 0px;
+    margin-top: 4px;
+    position: relative;
+    float: right;
+    display: block;
+    text-align: right;
+    width: 22px;
+    height: 20px;
+    background: url("/assets/dollar-sign-gray.svg") scroll no-repeat; }
+  .price-div .radio-wrapper:hover .radio-label:hover {
+    background: url("/assets/dollar-sign-green.svg") scroll no-repeat; }
+  .price-div .radio-wrapper:hover .radio-label:hover ~ .radio-label {
+    background: url("/assets/dollar-sign-green.svg") scroll no-repeat; }
+
+.price-div .radio-input:checked ~ .radio-label {
+  background: url("/assets/dollar-sign-green.svg") scroll no-repeat; }
+
+.price-div .radio-wrapper:hover .radio-label {
+  background: url("/assets/dollar-sign-gray.svg") scroll no-repeat; }
