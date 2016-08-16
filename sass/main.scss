@@ -1,19 +1,42 @@
 $nav-box-height: 60px;
 $map-height: 650px;
+$transition-time: 0.3s;
+$disabled-background-rating: url('/assets/gray-star.svg') scroll no-repeat;
+$checked-background-rating: url('/assets/yellow-star.svg') scroll no-repeat;
+$disabled-background-price: url('/assets/dollar-sign-gray.svg') scroll no-repeat;
+$checked-background-price: url('/assets/dollar-sign-green.svg') scroll no-repeat;
+
+
 
 body {
   height: 100%;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-.nav-row {
+.container {
   min-width: 650px;
 }
+.nav-row {
+  padding-left: 15px;
+  padding-right: 15px;
+
+}
+.small-nav {
+  display: none;
+}
+// @media only screen and (max-width : 768px) {
+//   .large-nav {
+//     display: none;
+//   }  
+//   .small-nav {
+//     display: inline-block;
+//   }
+// }
 
 .nav-bar {
-  border-radius: 2px;
-  nav {
-    background: #0d0d0d;
+    background: #1a1a1a;
+    border-radius: 2px;
+//    background: #0d0d0d;
     padding: 12px;
     font-size: 20px;
     display: flex;
@@ -21,7 +44,6 @@ body {
 
     .logo {
       height: $nav-box-height;
-      padding-right: 20px;
       border-radius: 2px;
     }
 
@@ -36,14 +58,18 @@ body {
       color: white;
       border-radius: 2px;
 
-      -webkit-transition: background 0.3s ease-out;
-      -moz-transition: background 0.3s ease-out;
-      -o-transition: background 0.3s ease-out;
-      -ms-transition: background 0.3s ease-out;
-      transition: background 0.3s ease-out;
+      -webkit-transition: background $transition-time ease-out;
+      -moz-transition: background $transition-time ease-out;
+      -o-transition: background $transition-time ease-out;
+      -ms-transition: background $transition-time ease-out;
+      transition: background $transition-time ease-out;
       &:hover {
         background: #FFFFFF;
         color: black; 
+      }
+
+      &.last {
+        margin-right: 0px;
       }
 
       //Right-most element that you want on the left side...
@@ -65,18 +91,24 @@ body {
         font-size: 20px;
       }
     }
-
-
+    @media only screen and (max-width : 768px) {
+      // justify-content: space-between;
+      vertical-align: bottom;
+      .nav-item {
+        float: left;
+        margin-right: 0px;
+      }
+    }
     button {
       background: none;
       outline: none;
       border: none;
       padding: 0;
     }
-  }
 }
 
 .sub-nav {
+  margin-top: 15px;
   display:none;
   border-radius: 2px;
   &.active {
@@ -84,23 +116,40 @@ body {
   }
 }
 
+@mixin search-checkbox($disabled-background, $selected-background) {
+    .checkbox-input {
+      display: none;
+      &:checked +label {
+        background: $selected-background;
+      }
+    }
+    .checkbox-label {
+      width: 20px;
+      height: 20px;
+      background: $disabled-background;
+    }
+}
+
+
+.price-div {
+  @include search-checkbox($disabled-background-price, $checked-background-price);
+}
+
+.rating-div {
+  @include search-checkbox($disabled-background-rating, $checked-background-rating)
+}
+
+
 .map {
   height: $map-height;
-  
   #map {
-    position: absolute;
+    position: relative;
     height: 100%;
-    width: 100%;
-    margin: 0;
-    @media only screen and (max-width : 992px) {
-      width: 96%;
-    }
   }
 }
 
 .review {
   display: none;
-  margin-left: 10px;
   /* Medium Devices, Desktops */
   @media only screen and (max-width : 992px) {
     margin-left: 0px;
@@ -135,3 +184,4 @@ body {
     }
   }
 }
+
