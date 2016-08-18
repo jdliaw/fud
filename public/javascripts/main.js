@@ -32,6 +32,13 @@ showSubNav = function () {
   $('.sub-nav').addClass('active');
 }
 
+$(document).ready(function () {
+  for (var i = 1; i <= 5; i++) {
+    $("#rating-input-" + i + "+ .checkbox-label").width(i * 20);
+    $("#price-input-" + i + "+ .checkbox-label").width(i * 20);
+  }
+});
+
 function getData(reviewDiv) {
   var data = [];
   data["rigobertos-taco-shop"] = {
