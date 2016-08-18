@@ -69,10 +69,8 @@ textarea {
 
 @mixin review-checkbox($disabled-background, $selected-background) {
     .radio-wrapper {
-        overflow: hidden;
         display: inline-block;
         font-size: 0;
-        position: relative;
         vertical-align: middle;
 
         //Hide input, so we only show label.
@@ -83,10 +81,7 @@ textarea {
         .radio-label {
             margin-bottom: 0px;
             margin-top: 4px;
-            position: relative;
             float: right;
-            display: block;
-            text-align: right;
             width: 22px;
             height: 20px;
             background: $disabled-background;
