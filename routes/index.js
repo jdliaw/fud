@@ -11,8 +11,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var router = express.Router();
 app.use(router);
 
-/* mongodb stuff.......... */
-var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
 
 
 /* GET home page. */
@@ -36,7 +34,6 @@ router.post('/add/restaurant', function (req, res, next) {
   console.log("Output of req.body from POST: in parts:")
 
   //req.body is the JSON object that looks like a string.
-  console.log(req.body);
   var isFilledOut = true;
   //Loops through req.body and use req.body[key] to access the input.
   for (var key in req.body) {
@@ -54,18 +51,22 @@ router.post('/add/restaurant', function (req, res, next) {
       req.body.review = formattedReview;
     }
   }
-
+  console.log("Here is the data entered: ");
   console.log(req.body);
+
   //if formatted correctly.... add to database
   if (isFilledOut) {
+    //straight from https://github.com/mongolab/mongodb-driver-examples/blob/master/nodejs/nodeSimpleExample.js
+    /* mongodb stuff.......... */
+    //using our test user, with database fud_map
+    var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
+
     mongodb.MongoClient.connect(uri, function (err, db) {
       if (err) {
         throw err;
       }
-      /*
-       * First we'll add a few songs. Nothing is required to create the 
-       * songs collection; it is created automatically when we insert.
-       */
+      
+      //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
       // Note that the insert method can take either an array or a dict.
 
@@ -73,14 +74,6 @@ router.post('/add/restaurant', function (req, res, next) {
         if (err) {
           throw err;
         }
-        // restaurants.update(
-        //   { title: req.body.title },
-        //   { address: req.body.address},
-        //   { category: req.body.category},
-        //   { priceinput: req.body.price-input},
-        //   { ratinginput: req.body.price-input},
-        //   { review: req.body.review},
-        // );
       });
     });
 

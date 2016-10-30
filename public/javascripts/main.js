@@ -9,7 +9,6 @@ showReview = function (reviewDiv) {
   // Compile the template
   var reviewTemplate = Handlebars.compile(reviewTemplateScript);
 
-
   // Define our data object
   /*
   Ideally, we would run a query in MongoDB to get our "data", like:
@@ -40,6 +39,28 @@ $(document).ready(function () {
 });
 
 function getData(reviewDiv) {
+  // var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
+
+  // mongodb.MongoClient.connect(uri, function (err, db) {
+  //   if (err) {
+  //     throw err;
+  //   }
+
+  //   //Using the 'restaurant' collection
+  //   var restaurants = db.collection('restaurants');
+  //   // Note that the insert method can take either an array or a dict.
+  //   restaurants.find().toArray(function (err, docs) {
+  //     if(err) {
+  //       throw err;
+  //     }
+  //     docs.forEach(function(doc) {
+  //       console.log(doc['title'] + ', ' + doc['address'] + ', ' + doc['category'] + ', ' + doc['price-input'] + '!');
+  //     });
+  //   });
+    
+
+  // });
+
   var data = [];
   data["rigobertos-taco-shop"] = {
     "title": "Rigoberto's",
