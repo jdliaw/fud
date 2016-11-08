@@ -26,6 +26,10 @@ router.get('/about', function (req, res, next) {
   res.render('about');
 });
 
+router.get('/restaurants/:id', function(req, res, next) {
+  res.send("sending stuff: " + req.params.id);
+})
+
 router.get('/add', function (req, res, next) {
   res.render('add');
 });
@@ -83,3 +87,5 @@ router.post('/add/restaurant', function (req, res, next) {
 });
 
 module.exports = router;
+
+
