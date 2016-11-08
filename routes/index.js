@@ -4,6 +4,8 @@ var app = express();
 
 var mongodb = require('mongodb');
 
+var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,14 +28,33 @@ router.get('/about', function (req, res, next) {
   res.render('about');
 });
 
-router.get('/restaurants/:id', function(req, res, next) {
-  res.send("sending stuff: " + req.params.id);
+
+/* GET a restaurant from the database */
+router.get('/restaurants/:id', function (req, res, next) {
+  mongodb.MongoClient.connect(uri, function (err, db) {
+    if (err) {
+      throw err;
+    }
+    var restaurants = db.collection('restaurants');
+    //console.log(req.params.id);
+    var restaurant = restaurants.find({"title": req.params.id}).toArray(function (err, docs) {
+      if(err) {
+        throw err;
+      }
+      docs.forEach(function (doc) {
+        res.send(doc);
+      });
+      //console.log(doc)
+    });
+  });
+  //res.send(req.params.id);
 })
 
 router.get('/add', function (req, res, next) {
   res.render('add');
 });
 
+/* POST a restaurant to the Database */
 router.post('/add/restaurant', function (req, res, next) {
   console.log("Output of req.body from POST: in parts:")
 
@@ -63,13 +84,15 @@ router.post('/add/restaurant', function (req, res, next) {
     //straight from https://github.com/mongolab/mongodb-driver-examples/blob/master/nodejs/nodeSimpleExample.js
     /* mongodb stuff.......... */
     //using our test user, with database fud_map
-    var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
+
+    //Is now a global var
+    //var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
 
     mongodb.MongoClient.connect(uri, function (err, db) {
       if (err) {
         throw err;
       }
-      
+
       //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
       // Note that the insert method can take either an array or a dict.
@@ -80,8 +103,6 @@ router.post('/add/restaurant', function (req, res, next) {
         }
       });
     });
-
-
     res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
   }
 });
