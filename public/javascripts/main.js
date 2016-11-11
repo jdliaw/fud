@@ -1,4 +1,29 @@
 showReview = function (title) {
+  
+  /* Make GET request */
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function () {
+    if (request.readyState === 4) {
+      if (request.status === 200) {
+        document.body.className = 'ok';
+        var resp = JSON.parse(request.responseText);
+        console.log(resp);
+        setupHandlebars(title, resp);
+      } else {
+        document.body.className = 'error';
+      }
+    }
+  };
+  var url = "restaurants/" + title;
+  request.open("GET", url, true);
+  request.send(null);
+
+  /* End GET Request */
+
+  
+}
+
+function setupHandlebars(title, resp) {
   var reviewDiv = title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
   $('.review.active').removeClass('active');
   $('.review-placeholder').addClass('active');
@@ -17,25 +42,8 @@ showReview = function (title) {
   Here, we just have some placeholder, fake DB with some placeholder get function that gives us our data.
   */
 
-  data = getData(reviewDiv);
-
-  /* Make GET request */
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-    if (request.readyState === 4) {
-      if (request.status === 200) {
-        document.body.className = 'ok';
-        console.log(request.responseText);
-      } else {
-        document.body.className = 'error';
-      }
-    }
-  };
-  var url = "restaurants/" + title;
-  request.open("GET", url, true);
-  request.send(null);
-
-  /* End GET Request */
+  // data = getData(reviewDiv);
+  data = resp;
 
   // Pass our data to the template
   var theCompiledHtml = reviewTemplate(data);

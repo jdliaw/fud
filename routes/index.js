@@ -42,6 +42,7 @@ router.get('/restaurants/:id', function (req, res, next) {
         throw err;
       }
       docs.forEach(function (doc) {
+        console.log(doc);
         res.send(doc);
       });
       //console.log(doc)
