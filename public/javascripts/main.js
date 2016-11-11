@@ -6,9 +6,9 @@ showReview = function (title) {
     if (request.readyState === 4) {
       if (request.status === 200) {
         document.body.className = 'ok';
-        var resp = JSON.parse(request.responseText);
-        console.log(resp);
-        setupHandlebars(title, resp);
+        var res = JSON.parse(request.responseText);
+        console.log(res);
+        setupHandlebars(title, res);
       } else {
         document.body.className = 'error';
       }
@@ -23,7 +23,7 @@ showReview = function (title) {
   
 }
 
-function setupHandlebars(title, resp) {
+function setupHandlebars(title, res) {
   var reviewDiv = title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
   $('.review.active').removeClass('active');
   $('.review-placeholder').addClass('active');
@@ -43,7 +43,7 @@ function setupHandlebars(title, resp) {
   */
 
   // data = getData(reviewDiv);
-  data = resp;
+  data = res;
 
   // Pass our data to the template
   var theCompiledHtml = reviewTemplate(data);
