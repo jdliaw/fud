@@ -98,6 +98,7 @@ router.post('/add/restaurant', function (req, res, next) {
       }
       //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
+      restaurants.createIndex({ "title": 1, "address": 1 }, { unique: true });
       //variables to convert price -> dollar signs, rating -> stars
       let pr = "";
       let rt = "";
@@ -128,10 +129,13 @@ router.post('/add/restaurant', function (req, res, next) {
           // Note that the insert method can take either an array or a dict.
           restaurants.insert(req.body, function (err, result) {
             if (err) {
-              throw err;
+              res.status(500).send('Something broke! You probably tried to insert a restaurant that already exists.');
+            }
+            else {
+              res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
             }
           });
-          res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
+         
         }
       });
     });
