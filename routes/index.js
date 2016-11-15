@@ -98,16 +98,9 @@ router.post('/add/restaurant', function (req, res, next) {
       }
       //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
-
-      // var client = new MapboxClient('pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw');
-      // var addr = req.body["address"];
-      // client.geocodeForward(addr, function (err, res) {
-      //   console.log(res["geometry"]);
-      // });
-      //Some more formatting for Restaurants.
+      //variables to convert price -> dollar signs, rating -> stars
       let pr = "";
       let rt = "";
-
       for (let i = 0; i < req.body["price-input"]; i++) {
         pr += '$';
       }
@@ -124,20 +117,25 @@ router.post('/add/restaurant', function (req, res, next) {
         var jsonobj = JSON.parse(response);
         // console.log(jsonobj);
         console.log(jsonobj);
-        loc = jsonobj.results[0].location
-        req.body["location"] = loc;
-
-        // console.log(req.body);
-
-        // Note that the insert method can take either an array or a dict.
-        restaurants.insert(req.body, function (err, result) {
-          if (err) {
-            throw err;
-          }
-        });
+        if (typeof jsonobj.results === 'undefined' || jsonobj.results.length <= 0) {
+          console.log("error");
+          res.send("Please provide a more complete address. Lat/Lng were unable to be determined");
+        }
+        else {
+          loc = jsonobj.results[0].location
+          console.log(loc);
+          req.body["location"] = loc;
+          // Note that the insert method can take either an array or a dict.
+          restaurants.insert(req.body, function (err, result) {
+            if (err) {
+              throw err;
+            }
+          });
+          res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
+        }
       });
     });
-    res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
+
   }
 });
 
