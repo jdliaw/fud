@@ -13,8 +13,6 @@
             "properties": {
                 "title": "Tacos El Gordo",
                 "description": "689 H Street, Chula Vista, CA 91910",
-                "category": "Mexican",
-                "city": "San Diego",
                 "marker-size": "large",
                 "marker-color": "#f75850",
                 "marker-symbol": "restaurant"

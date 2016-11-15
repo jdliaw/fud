@@ -1,9 +1,15 @@
 var express = require('express');
 var path = require('path');
+
+var key = 'b9c44af68bbaf60823b99f9cb586aa26d2c455b';
+var Geocodio = require('geocodio');
+var config = {
+  api_key: key
+}
+var geocodio = new Geocodio(config);
+
 var app = express();
-
 var mongodb = require('mongodb');
-
 var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
 
 var bodyParser = require('body-parser');
@@ -32,7 +38,6 @@ router.get('/mapdata', function (req, res, next) {
       throw err;
     }
     var restaurants = db.collection('restaurants');
-
     var mapdata = restaurants.find().toArray(function (err, docs) {
       if (err) {
         throw err;
@@ -65,7 +70,6 @@ router.get('/add', function (req, res, next) {
 
 /* POST a restaurant to the Database */
 router.post('/add/restaurant', function (req, res, next) {
-  console.log("Output of req.body from POST: in parts:")
 
   //req.body is the JSON object that looks like a string.
   var isFilledOut = true;
@@ -85,8 +89,6 @@ router.post('/add/restaurant', function (req, res, next) {
       req.body.review = formattedReview;
     }
   }
-  console.log("Here is the data entered: ");
-  console.log(req.body);
 
   //if formatted correctly.... add to database
   if (isFilledOut) {
@@ -96,11 +98,16 @@ router.post('/add/restaurant', function (req, res, next) {
       }
       //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
-      console.log(req.body["price-input"]);
-      console.log(req.body["rating-input"]);
 
+      // var client = new MapboxClient('pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw');
+      // var addr = req.body["address"];
+      // client.geocodeForward(addr, function (err, res) {
+      //   console.log(res["geometry"]);
+      // });
       //Some more formatting for Restaurants.
-      let pr, rt = "";
+      let pr = "";
+      let rt = "";
+
       for (let i = 0; i < req.body["price-input"]; i++) {
         pr += '$';
       }
@@ -109,11 +116,25 @@ router.post('/add/restaurant', function (req, res, next) {
       }
       req.body["price-input"] = pr;
       req.body["rating-input"] = rt;
-      // Note that the insert method can take either an array or a dict.
-      restaurants.insert(req.body, function (err, result) {
-        if (err) {
-          throw err;
-        }
+
+      var address = req.body["address"];
+      var loc = "";
+      geocodio.get('geocode', { q: address }, function (err, response) {
+        if (err) throw err;
+        var jsonobj = JSON.parse(response);
+        // console.log(jsonobj);
+        console.log(jsonobj);
+        loc = jsonobj.results[0].location
+        req.body["location"] = loc;
+
+        // console.log(req.body);
+
+        // Note that the insert method can take either an array or a dict.
+        restaurants.insert(req.body, function (err, result) {
+          if (err) {
+            throw err;
+          }
+        });
       });
     });
     res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");

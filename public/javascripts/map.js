@@ -16,6 +16,9 @@ var panningZoomLevel = 5;         //What level of zoom we use as our default pan
 var endZoomLevel = 12;            //What level of zoom we use as our default end zoom.
 var dur = 2;                      //Duration of pan. Prob will keep as is.
 
+var map = L.mapbox.map('map', 'mapbox.streets', {
+    zoomAnimationThreshold: 9
+}).setView([32.630395, -117.093245], 10);
 
 getRestaurants();
 // generateMap();
@@ -27,9 +30,11 @@ function getRestaurants() {
         if (request.readyState === 4) {
             if (request.status === 200) {
                 document.body.className = 'ok';
+                //Gets the entire mongodb collection
                 var res = JSON.parse(request.responseText);
-                doStuff(res);
-                generateMap();
+                //convert mongodb collection to features on map
+                var geoJsonData = convertToGeojson(res);
+                generateMap(geoJsonData);
             } else {
                 document.body.className = 'error';
             }
@@ -40,25 +45,56 @@ function getRestaurants() {
     request.send(null);
 }
 
-function doStuff(res) {
-    // console.log(res);
+function convertToGeojson(res) {
+    var jsonData = {};
+    jsonData["type"] = "FeatureCollection";
+    jsonData["features"] = [];
+
+    var features = {};
+
+
+    // jsonData["features"].push();
     for (var prop in res) {
         if (!res.hasOwnProperty(prop)) {
             //The current property is not a direct property of p
             continue;
         }
-        console.log(res[prop]);
+        var title = res[prop]["title"];
+        var addr = res[prop]["address"];
+        var lat = res[prop]["location"].lat;
+        var lon = res[prop]["location"].lng;
+        var featureData = {};
+
+        var feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [lon, lat]
+            },
+            "properties": {
+                "title": title,
+                "description": addr,
+                "marker-size": "large",
+                "marker-color": "#f75850",
+                "marker-symbol": "restaurant"
+            }
+        }
+
+        console.log(feature);
+
+        jsonData["features"][prop] = feature;
+
+        // console.log(res[prop]);
         //Do your logic with the property here
     }
+    return jsonData;
 }
 
-function generateMap() {
+function generateMap(geoJsonData) {
     console.log("after..?");
-    var map = L.mapbox.map('map', 'mapbox.streets', {
-        zoomAnimationThreshold: 9
-    }).setView([32.630395, -117.093245], 10);
     //Generating map...
-    myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
+    // myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
+    myLayer = L.mapbox.featureLayer(geoJsonData).addTo(map);
 
     //Still generating map...
     myLayer.on('click', function (e) {
