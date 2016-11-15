@@ -1,7 +1,4 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw';
-var map = L.mapbox.map('map', 'mapbox.streets', {
-    zoomAnimationThreshold: 9
-}).setView([32.630395, -117.093245], 10);
 
 //Flags used to determine if the map has finished panning/zooming or not, to make sure we only call event handler functions when we want.
 var isFinishedZooming = false;
@@ -19,32 +16,74 @@ var panningZoomLevel = 5;         //What level of zoom we use as our default pan
 var endZoomLevel = 12;            //What level of zoom we use as our default end zoom.
 var dur = 2;                      //Duration of pan. Prob will keep as is.
 
-//Generating map...
-myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
 
-//Still generating map...
-myLayer.on('click', function (e) {
-    // Force the popup closed.
-    // e.layer.closePopup();
+getRestaurants();
+// generateMap();
 
-    var feature = e.layer.feature;
-    var content = '<div><strong>' + feature.properties.title + '</strong>' +
-        '<p>' + feature.properties.description + '</p></div>';
 
-    console.log(feature.properties.title);
-    // pass in actual title. translate it to review div later.
-    // var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
-    // showReview(reviewDivId);
+function getRestaurants() {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                document.body.className = 'ok';
+                var res = JSON.parse(request.responseText);
+                doStuff(res);
+                generateMap();
+            } else {
+                document.body.className = 'error';
+            }
+        }
+    };
+    var url = "mapdata/";
+    request.open("GET", url, true);
+    request.send(null);
+}
 
-    showReview(feature.properties.title);
+function doStuff(res) {
+    // console.log(res);
+    for (var prop in res) {
+        if (!res.hasOwnProperty(prop)) {
+            //The current property is not a direct property of p
+            continue;
+        }
+        console.log(res[prop]);
+        //Do your logic with the property here
+    }
+}
 
-    // if (feature.properties.title === "Tacos El Gordo") {
-    //   showTacos();
-    // }
+function generateMap() {
+    console.log("after..?");
+    var map = L.mapbox.map('map', 'mapbox.streets', {
+        zoomAnimationThreshold: 9
+    }).setView([32.630395, -117.093245], 10);
+    //Generating map...
+    myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
 
-    var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-    map.setView(dest, 15);
-});
+    //Still generating map...
+    myLayer.on('click', function (e) {
+        // Force the popup closed.
+        // e.layer.closePopup();
+
+        var feature = e.layer.feature;
+        var content = '<div><strong>' + feature.properties.title + '</strong>' +
+            '<p>' + feature.properties.description + '</p></div>';
+
+        console.log(feature.properties.title);
+        // pass in actual title. translate it to review div later.
+        // var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
+        // showReview(reviewDivId);
+
+        showReview(feature.properties.title);
+
+        // if (feature.properties.title === "Tacos El Gordo") {
+        //   showTacos();
+        // }
+
+        var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+        map.setView(dest, 15);
+    });
+}
 
 /************************************************************/
 /*                                                          */

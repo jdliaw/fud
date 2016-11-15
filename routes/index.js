@@ -13,8 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var router = express.Router();
 app.use(router);
 
-
-
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
@@ -28,6 +26,21 @@ router.get('/about', function (req, res, next) {
   res.render('about');
 });
 
+router.get('/mapdata', function (req, res, next) {
+  mongodb.MongoClient.connect(uri, function (err, db) {
+    if (err) {
+      throw err;
+    }
+    var restaurants = db.collection('restaurants');
+
+    var mapdata = restaurants.find().toArray(function (err, docs) {
+      if (err) {
+        throw err;
+      }
+      res.send(docs);
+    });
+  });
+});
 
 /* GET a restaurant from the database */
 router.get('/restaurants/:id', function (req, res, next) {
@@ -37,18 +50,13 @@ router.get('/restaurants/:id', function (req, res, next) {
     }
     var restaurants = db.collection('restaurants');
     //console.log(req.params.id);
-    var restaurant = restaurants.find({"title": req.params.id}).toArray(function (err, docs) {
-      if(err) {
+    var restaurant = restaurants.findOne({ "title": req.params.id }, function (err, doc) {
+      if (err) {
         throw err;
       }
-      docs.forEach(function (doc) {
-        console.log(doc);
-        res.send(doc);
-      });
-      //console.log(doc)
+      res.send(doc);
     });
   });
-  //res.send(req.params.id);
 })
 
 router.get('/add', function (req, res, next) {
@@ -82,22 +90,26 @@ router.post('/add/restaurant', function (req, res, next) {
 
   //if formatted correctly.... add to database
   if (isFilledOut) {
-    //straight from https://github.com/mongolab/mongodb-driver-examples/blob/master/nodejs/nodeSimpleExample.js
-    /* mongodb stuff.......... */
-    //using our test user, with database fud_map
-
-    //Is now a global var
-    //var uri = 'mongodb://test:test@ds011705.mlab.com:11705/fud_map';
-
     mongodb.MongoClient.connect(uri, function (err, db) {
       if (err) {
         throw err;
       }
-
       //Using the 'restaurant' collection
       var restaurants = db.collection('restaurants');
-      // Note that the insert method can take either an array or a dict.
+      console.log(req.body["price-input"]);
+      console.log(req.body["rating-input"]);
 
+      //Some more formatting for Restaurants.
+      let pr, rt = "";
+      for (let i = 0; i < req.body["price-input"]; i++) {
+        pr += '$';
+      }
+      for (let i = 0; i < req.body["rating-input"]; i++) {
+        rt += '✮';
+      }
+      req.body["price-input"] = pr;
+      req.body["rating-input"] = rt;
+      // Note that the insert method can take either an array or a dict.
       restaurants.insert(req.body, function (err, result) {
         if (err) {
           throw err;
@@ -107,6 +119,8 @@ router.post('/add/restaurant', function (req, res, next) {
     res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
   }
 });
+
+
 
 module.exports = router;
 
