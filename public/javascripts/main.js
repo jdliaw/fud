@@ -1,5 +1,4 @@
-showReview = function (title) {
-  
+showReview = function (title) { 
   /* Make GET request */
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
@@ -53,66 +52,3 @@ $(document).ready(function () {
     $("#price-input-" + i + "+ .checkbox-label").width(i * 20);
   }
 });
-
-// function getData(reviewDiv) {
-//   var data = [];
-//   data["rigobertos-taco-shop"] = {
-//     "title": "Rigoberto's",
-//     "address": "7094 Miramar Rd, San Diego, CA 92121",
-//     "rating": "✮✮✮✮✮",
-//     "category": "Mexican, Cali Burritos, Fries",
-//     "price": "$",
-//     "content": "<p>Hello Cali Burritos </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>"
-//   };
-
-//   data["tacos-el-gordo"] = {
-//     "title": "Tacos El Gordo",
-//     "address": "7094 Miramar Rd, San Diego, CA 92121",
-//     "rating": "✮✮✮✮✮",
-//     "category": "Mexican, Tacos",
-//     "price": "$",
-//     "content": "<p>Hello Tacos </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>"
-//   }
-
-//   data["bruin-plate-residential-restaurant"] = {
-//     "title": "Bruin Plate",
-//     "address": "7094 Miramar Rd, San Diego, CA 92121",
-//     "rating": "✮✮✮✮✮",
-//     "category": "American (New), Healthy, Vegan",
-//     "price": "$$",
-//     "content": "<p>Hello Bplate </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>"
-//   }
-
-//   data["la-margarita"] = {
-//     "title": "La Margarita",
-//     "address": "7094 Miramar Rd, San Diego, CA 92121",
-//     "rating": "✮✮✮✮✮",
-//     "category": "Italian, Pizza",
-//     "price": "$",
-//     "content": "<p>Hello Pizza </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>" +
-//     "<p>Lorem Ipsum over and over and over </p>"
-//   }
-
-//   return data[reviewDiv];
-// }
-
-

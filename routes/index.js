@@ -1,12 +1,7 @@
 var express = require('express');
 var path = require('path');
 
-var key = 'b9c44af68bbaf60823b99f9cb586aa26d2c455b';
-var Geocodio = require('geocodio');
-var config = {
-  api_key: key
-}
-var geocodio = new Geocodio(config);
+var MapboxClient = require('mapbox');
 
 var app = express();
 var mongodb = require('mongodb');
@@ -105,26 +100,38 @@ router.post('/add/restaurant', function (req, res, next) {
       for (let i = 0; i < req.body["price-input"]; i++) {
         pr += '$';
       }
-      for (let i = 0; i < req.body["rating-input"]; i++) {
-        rt += '✮';
+      
+      for (let i = 0; i < 5; i++) {
+        if(i < req.body["rating-input"]) {
+          rt += '✮';
+        }
+        else {
+          rt += '✩';
+        }
       }
       req.body["price-input"] = pr;
       req.body["rating-input"] = rt;
 
       var address = req.body["address"];
-      var loc = "";
-      geocodio.get('geocode', { q: address }, function (err, response) {
-        if (err) throw err;
-        var jsonobj = JSON.parse(response);
-        // console.log(jsonobj);
-        console.log(jsonobj);
-        if (typeof jsonobj.results === 'undefined' || jsonobj.results.length <= 0) {
-          console.log("error");
+      var loc;
+
+
+      var client = new MapboxClient('pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw');
+      client.geocodeForward(address, function (err, response) {
+        // res is the geocoding result as parsed JSON
+        if (err) {
+          throw err;
+        }
+        var jsonobj = response;
+        console.log(response);
+
+//        if (typeof jsonobj["features"][0]["center"] === 'undefined' || jsonobj["features"][0]["center"].length <= 0) {
+        if(typeof jsonobj.features === 'undefined' || jsonobj.features.length <= 0) {
           res.send("Please provide a more complete address. Lat/Lng were unable to be determined");
         }
         else {
-          loc = jsonobj.results[0].location
-          console.log(loc);
+          loc = {"lat": jsonobj["features"][0].center[1], "lng" : jsonobj["features"][0].center[0]};
+
           req.body["location"] = loc;
           // Note that the insert method can take either an array or a dict.
           restaurants.insert(req.body, function (err, result) {
@@ -135,9 +142,10 @@ router.post('/add/restaurant', function (req, res, next) {
               res.send("Thanks for submitting! Click <a href='/'>here</a> to go back.");
             }
           });
-         
+
         }
       });
+
     });
 
   }

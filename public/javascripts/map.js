@@ -23,6 +23,25 @@ var map = L.mapbox.map('map', 'mapbox.streets', {
 getRestaurants();
 // generateMap();
 
+// var url2 = "https://api.mapbox.com/geocoding/v5/mapbox.places/1600+pennsylvania+ave+nw.json?access_token=pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw";
+// 
+// var testrequest = new XMLHttpRequest();
+// testrequest.onreadystatechange = function () {
+//     if (testrequest.readyState === 4) {
+//         if (testrequest.status === 200) {
+//             document.body.className = 'ok';
+//             //Gets the entire mongodb collection
+//             var res = JSON.parse(testrequest.responseText);
+//             console.log("test", res);
+//         } else {
+//             document.body.className = 'error';
+//         }
+//     }
+// };
+// testrequest.open("GET", url2, true);
+// testrequest.send(null);
+
+
 
 function getRestaurants() {
     var request = new XMLHttpRequest();
