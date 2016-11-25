@@ -6,7 +6,6 @@ showReview = function (title) {
       if (request.status === 200) {
         document.body.className = 'ok';
         var res = JSON.parse(request.responseText);
-        console.log(res);
         res["price-input"] = convertToCharacters(res["price-input"], "$", "");
         res["rating-input"] = convertToCharacters(res["rating-input"], "✮", "✩");
         setupHandlebars(title, res);
