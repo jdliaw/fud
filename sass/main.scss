@@ -6,8 +6,6 @@ $checked-background-rating: url('/assets/yellow-star.svg') scroll;
 $disabled-background-price: url('/assets/dollar-sign-gray.svg') scroll;
 $checked-background-price: url('/assets/dollar-sign-green.svg') scroll;
 
-
-
 body {
   height: 100%;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -24,14 +22,6 @@ body {
 .small-nav {
   display: none;
 }
-// @media only screen and (max-width : 768px) {
-//   .large-nav {
-//     display: none;
-//   }  
-//   .small-nav {
-//     display: inline-block;
-//   }
-// }
 
 .nav-bar {
     background: #1a1a1a;
@@ -170,7 +160,6 @@ body {
     }
 }
 
-
 .price-div {
   @include search-checkbox($disabled-background-price, $checked-background-price);
 }
@@ -178,7 +167,6 @@ body {
 .rating-div {
   @include search-checkbox($disabled-background-rating, $checked-background-rating)
 }
-
 
 .map {
   height: $map-height;
@@ -198,12 +186,9 @@ body {
   @media only screen and (max-width : 992px) {
     margin-left: 0px;
   }
-
-
   &.active {
     display: block;
   }
-
   .description {
     line-height: 90%;
     h3 {

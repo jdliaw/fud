@@ -97,25 +97,20 @@ textarea {
             }
         }
     }
-
     //If checked, keep all the stars on clicked/selected.
     .radio-input:checked ~ .radio-label {
         background: $selected-background;
     }
-
     //Reset stuff on hover to blank
     .radio-wrapper:hover .radio-label {
         background: $disabled-background;
     }
 }
-
 .rating-div {
     @include review-checkbox($gray-star, $yellow-star);
 }
-
 .price-div {
     @include review-checkbox($gray-dollar-sign, $green-dollar-sign);
-
 }
 
 

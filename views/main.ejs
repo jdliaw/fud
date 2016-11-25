@@ -2,106 +2,110 @@
 <html>
 
 <head>
-  <meta charset=utf-8 />
-  <title>füd</title>
-  <link rel='stylesheet' href='/stylesheets/main.css' />
-  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7'
-    crossorigin='anonymous'>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" />
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' />
+	<meta charset=utf-8 />
+	<title>füd</title>
+	<link rel='stylesheet' href='/stylesheets/main.css' />
+	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7'
+		crossorigin='anonymous'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css" />
+	<link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' />
 </head>
 
 <body>
-  <div class="container">
-    <nav class="row nav-row large-nav">
-      <div class="col-xs-5 nav-bar">
-        <button class="nav-item large" onclick="changeNY()">New York</button>
-        <button class="nav-item small" onclick="changeNY()">NY</button>
-        <button class="nav-item left large" onclick="changeLA()">Los Angeles</button>
-        <button class="nav-item left small" onclick="changeLA()">LA</button>
-      </div>
-      <div class="col-xs-2 nav-logo nav-bar">
-        <a href="/"><img class="logo" src="http://www.eatfud.com/wp-content/uploads/2015/03/logo.png"></a>
-      </div>
-      <div class="col-xs-5 nav-bar">
-        <button class="nav-item" onclick="searchRestaurants()">Search</button>
-        <!--<a class="nav-item right last" href="#rev">Review</a>-->
-        <a class="nav-item right last" href="/add">Add</a>
+	<div class="container">
+		<nav class="row nav-row large-nav">
+			<div class="col-xs-5 nav-bar">
+				<button class="nav-item large" onclick="changeNY()">New York</button>
+				<button class="nav-item small" onclick="changeNY()">NY</button>
+				<button class="nav-item left large" onclick="changeLA()">Los Angeles</button>
+				<button class="nav-item left small" onclick="changeLA()">LA</button>
+			</div>
+			<div class="col-xs-2 nav-logo nav-bar">
+				<a href="/"><img class="logo" src="http://www.eatfud.com/wp-content/uploads/2015/03/logo.png"></a>
+			</div>
+			<div class="col-xs-5 nav-bar">
+				<button class="nav-item" onclick="searchRestaurants()">Search</button>
+				<!--<a class="nav-item right last" href="#rev">Review</a>-->
+				<a class="nav-item right last" href="/add">Add</a>
 
-      </div>
-    </nav>
-    <nav class="row small-nav">
-      <div class="col-sm-12">
-        Smaller, dropdown navbar here.
-      </div>
-    </nav>
-  </div>
+			</div>
+		</nav>
+		<nav class="row small-nav">
+			<div class="col-sm-12">
+				Smaller, dropdown navbar here.
+			</div>
+		</nav>
+	</div>
 
-  <div class="container sub-nav">
-    <div class="filter">
-      <span>Filters</span><br>
-      <ul id="dropdowns">
-        <li>
-          <div class="dropdown-parent">Rating</div>
-          <div class="dropdown-content">
-            <div class="form-group row">
-              <label for="rating" class="col-sm-1 col-form-label input-label"></label>
-              <div class="rating-div">
-                <fieldset class="checkbox-wrapper" id="rating-input">
-                  <input type="checkbox" class="checkbox-input" id="rating-input-1" name="rating-input" value="1">
-                  <label for="rating-input-1" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="rating-input-2" name="rating-input" value="2">
-                  <label for="rating-input-2" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="rating-input-3" name="rating-input" value="3">
-                  <label for="rating-input-3" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="rating-input-4" name="rating-input" value="4">
-                  <label for="rating-input-4" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="rating-input-5" name="rating-input" value="5">
-                  <label for="rating-input-5" class="checkbox-label"></label>
-                </fieldset>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="dropdown-parent">Price</div>
-          <div class="dropdown-content">
-            <div class="form-group row">
-              <label for="price" class="col-sm-1 col-form-label input-label"></label>
-              <div class="price-div">
-                <fieldset class="checkbox-wrapper" id="price-input">
-                  <input type="checkbox" class="checkbox-input" id="price-input-1" name="price-input" value="1">
-                  <label for="price-input-1" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="price-input-2" name="price-input" value="2">
-                  <label for="price-input-2" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="price-input-3" name="price-input" value="3">
-                  <label for="price-input-3" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="price-input-4" name="price-input" value="4">
-                  <label for="price-input-4" class="checkbox-label"></label>
-                  <input type="checkbox" class="checkbox-input" id="price-input-5" name="price-input" value="5">
-                  <label for="price-input-5" class="checkbox-label"></label>
-                </fieldset>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 map">
-        <div id='map'></div>
-      </div>
-      <div class="col-md-6 sidebar">
-        <div class="review active" id="default">
-          <div class="description">
-            <h3>What are you waiting for?</h3>
-            <p>Click on something to explore!</p>
-          </div>
-        </div>
-        <div class="review-placeholder review" id="rev"></div>
-        <script id="review-template" type="text/x-handlebars-template">
+	<div class="container sub-nav">
+		<!--<form method="get" action="/main/" class="filter">-->
+		<div class="filter">    
+			<span>Filters</span><br>
+			<ul id="dropdowns">
+				<li>
+					<div class="dropdown-parent">Rating</div>
+					<div class="dropdown-content">
+						<div class="form-group row">
+							<label for="rating" class="col-sm-1 col-form-label input-label"></label>
+							<div class="rating-div">
+								<fieldset class="checkbox-wrapper" id="rating-input">
+									<input type="checkbox" class="checkbox-input" id="rating-input-1" name="rating-input" value="1">
+									<label for="rating-input-1" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="rating-input-2" name="rating-input" value="2">
+									<label for="rating-input-2" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="rating-input-3" name="rating-input" value="3">
+									<label for="rating-input-3" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="rating-input-4" name="rating-input" value="4">
+									<label for="rating-input-4" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="rating-input-5" name="rating-input" value="5">
+									<label for="rating-input-5" class="checkbox-label"></label>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="dropdown-parent">Price</div>
+					<div class="dropdown-content">
+						<div class="form-group row">
+							<label for="price" class="col-sm-1 col-form-label input-label"></label>
+							<div class="price-div">
+								<fieldset class="checkbox-wrapper" id="price-input">
+									<input type="checkbox" class="checkbox-input" id="price-input-1" name="price-input" value="1">
+									<label for="price-input-1" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="price-input-2" name="price-input" value="2">
+									<label for="price-input-2" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="price-input-3" name="price-input" value="3">
+									<label for="price-input-3" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="price-input-4" name="price-input" value="4">
+									<label for="price-input-4" class="checkbox-label"></label>
+									<input type="checkbox" class="checkbox-input" id="price-input-5" name="price-input" value="5">
+									<label for="price-input-5" class="checkbox-label"></label>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+          <div class="dropdown-parent"><button onclick="getRestaurants()">Search!</button></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 map">
+				<div id='map'></div>
+			</div>
+			<div class="col-md-6 sidebar">
+				<div class="review active" id="default">
+					<div class="description">
+						<h3>What are you waiting for?</h3>
+						<p>Click on something to explore!</p>
+					</div>
+				</div>
+				<div class="review-placeholder review" id="rev"></div>
+				<script id="review-template" type="text/x-handlebars-template">
           <div class="description">
             <h3>{{title}}</h3>
             <hr>
@@ -113,10 +117,10 @@
             {{{review}}}
           </div>
         </script>
-      </div>
-    </div>
-  </div>
-  <br><br><br><br>
+			</div>
+		</form>
+	</div>
+	<br><br><br><br>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>

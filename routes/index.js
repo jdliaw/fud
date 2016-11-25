@@ -27,13 +27,24 @@ router.get('/about', function (req, res, next) {
   res.render('about');
 });
 
-router.get('/mapdata', function (req, res, next) {
+router.get('/rating-input/:rating/price-input/:price', function (req, res, next) {
+  var ratingArray = [];
+  for (let i = 0; i < req.params.rating.length; i++) {
+    ratingArray.push(req.params.rating[i]);
+  }
+
+  var priceArray = [];
+  for (let i = 0; i < req.params.price.length; i++) {
+    priceArray.push(req.params.price[i]);
+  }
+
   mongodb.MongoClient.connect(uri, function (err, db) {
     if (err) {
       throw err;
     }
+
     var restaurants = db.collection('restaurants');
-    var mapdata = restaurants.find().toArray(function (err, docs) {
+    var mapdata = restaurants.find({"price-input": {$in: priceArray }, "rating-input": {$in: ratingArray}}).toArray(function (err, docs) {
       if (err) {
         throw err;
       }
@@ -42,14 +53,34 @@ router.get('/mapdata', function (req, res, next) {
   });
 });
 
+//get and return restaurants to be added to the map.
+// router.get('/mapdata', function (req, res, next) {
+
+//   console.log("sad");
+//   mongodb.MongoClient.connect(uri, function (err, db) {
+//     if (err) {
+//       throw err;
+//     }
+//     var restaurants = db.collection('restaurants');
+//     var mapdata = restaurants.find().toArray(function (err, docs) {
+//       if (err) {
+//         throw err;
+//       }
+//       res.send(docs);
+//     });
+//   });
+// });
+
+
+
 /* GET a restaurant from the database */
 router.get('/restaurants/:id', function (req, res, next) {
+  console.log(req.params.id);
   mongodb.MongoClient.connect(uri, function (err, db) {
     if (err) {
       throw err;
     }
     var restaurants = db.collection('restaurants');
-    //console.log(req.params.id);
     var restaurant = restaurants.findOne({ "title": req.params.id }, function (err, doc) {
       if (err) {
         throw err;
@@ -95,22 +126,22 @@ router.post('/add/restaurant', function (req, res, next) {
       var restaurants = db.collection('restaurants');
       restaurants.createIndex({ "title": 1, "address": 1 }, { unique: true });
       //variables to convert price -> dollar signs, rating -> stars
-      let pr = "";
-      let rt = "";
-      for (let i = 0; i < req.body["price-input"]; i++) {
-        pr += '$';
-      }
-      
-      for (let i = 0; i < 5; i++) {
-        if(i < req.body["rating-input"]) {
-          rt += '✮';
-        }
-        else {
-          rt += '✩';
-        }
-      }
-      req.body["price-input"] = pr;
-      req.body["rating-input"] = rt;
+      // let pr = "";
+      // let rt = "";
+      // for (let i = 0; i < req.body["price-input"]; i++) {
+      //   pr += '$';
+      // }
+
+      // for (let i = 0; i < 5; i++) {
+      //   if(i < req.body["rating-input"]) {
+      //     rt += '✮';
+      //   }
+      //   else {
+      //     rt += '✩';
+      //   }
+      // }
+      // req.body["price-input"] = pr;
+      // req.body["rating-input"] = rt;
 
       var address = req.body["address"];
       var loc;
@@ -123,14 +154,12 @@ router.post('/add/restaurant', function (req, res, next) {
           throw err;
         }
         var jsonobj = response;
-        console.log(response);
 
-//        if (typeof jsonobj["features"][0]["center"] === 'undefined' || jsonobj["features"][0]["center"].length <= 0) {
-        if(typeof jsonobj.features === 'undefined' || jsonobj.features.length <= 0) {
+        if (typeof jsonobj.features === 'undefined' || jsonobj.features.length <= 0) {
           res.send("Please provide a more complete address. Lat/Lng were unable to be determined");
         }
         else {
-          loc = {"lat": jsonobj["features"][0].center[1], "lng" : jsonobj["features"][0].center[0]};
+          loc = { "lat": jsonobj["features"][0].center[1], "lng": jsonobj["features"][0].center[0] };
 
           req.body["location"] = loc;
           // Note that the insert method can take either an array or a dict.

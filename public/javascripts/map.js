@@ -15,33 +15,13 @@ var tempDest;                     //Variable used to get get our destination bec
 var panningZoomLevel = 5;         //What level of zoom we use as our default pan.
 var endZoomLevel = 12;            //What level of zoom we use as our default end zoom.
 var dur = 2;                      //Duration of pan. Prob will keep as is.
+var numRatings = 5;
 
 var map = L.mapbox.map('map', 'mapbox.streets', {
     zoomAnimationThreshold: 9
 }).setView([32.630395, -117.093245], 10);
 
 getRestaurants();
-// generateMap();
-
-// var url2 = "https://api.mapbox.com/geocoding/v5/mapbox.places/1600+pennsylvania+ave+nw.json?access_token=pk.eyJ1IjoiamRsaWF3IiwiYSI6ImNpcjAzZHdsMzAycjVmc2txZHp6M2JtOHEifQ.S03POBe5nKC1CDRnJANxdw";
-// 
-// var testrequest = new XMLHttpRequest();
-// testrequest.onreadystatechange = function () {
-//     if (testrequest.readyState === 4) {
-//         if (testrequest.status === 200) {
-//             document.body.className = 'ok';
-//             //Gets the entire mongodb collection
-//             var res = JSON.parse(testrequest.responseText);
-//             console.log("test", res);
-//         } else {
-//             document.body.className = 'error';
-//         }
-//     }
-// };
-// testrequest.open("GET", url2, true);
-// testrequest.send(null);
-
-
 
 function getRestaurants() {
     var request = new XMLHttpRequest();
@@ -59,9 +39,45 @@ function getRestaurants() {
             }
         }
     };
-    var url = "mapdata/";
+    var url = getMapdataQueryString();
     request.open("GET", url, true);
     request.send(null);
+}
+
+
+//Generates a url string that looks like this: /rating-input/45/price-input/1234
+function getMapdataQueryString() {
+    var queryString = "/rating-input/"
+    var ratingString = "";
+    for (var i = 1; i < numRatings + 1; i++) {
+        if ($('#rating-input-' + i).is(":checked")) {
+            ratingString += i;
+        }
+    }
+    if(ratingString === "") {
+        queryString += "12345";
+    }
+    else { 
+        queryString += ratingString;
+    }
+    queryString += "/price-input/";
+    var priceString = "";
+    for (var i = 1; i < numRatings + 1; i++) {
+        if ($('#price-input-' + i).is(":checked")) {
+            priceString += i;
+        }
+    }
+    if(priceString === "") {
+        queryString += "12345";
+    }
+    else {
+        queryString += priceString;
+    }
+
+    if(queryString === "/rating-input//price-input/") {
+        return "/rating-input/12345/price-input/12345";
+    }
+    return queryString;
 }
 
 function convertToGeojson(res) {
@@ -71,8 +87,6 @@ function convertToGeojson(res) {
 
     var features = {};
 
-
-    // jsonData["features"].push();
     for (var prop in res) {
         if (!res.hasOwnProperty(prop)) {
             //The current property is not a direct property of p
@@ -98,22 +112,20 @@ function convertToGeojson(res) {
                 "marker-symbol": "restaurant"
             }
         }
-
-        console.log(feature);
-
         jsonData["features"][prop] = feature;
-
-        // console.log(res[prop]);
-        //Do your logic with the property here
     }
     return jsonData;
 }
-
+var myLayer;
 function generateMap(geoJsonData) {
-    console.log("after..?");
     //Generating map...
-    // myLayer = L.mapbox.featureLayer().loadURL('/content/restaurants.geojson').addTo(map);
-    myLayer = L.mapbox.featureLayer(geoJsonData).addTo(map);
+    //remove to create. 
+    if (myLayer instanceof L.mapbox.FeatureLayer) {
+        myLayer.clearLayers();
+        myLayer = L.mapbox.featureLayer(geoJsonData).addTo(map);
+    } else {
+        myLayer = L.mapbox.featureLayer(geoJsonData).addTo(map);
+    }
 
     //Still generating map...
     myLayer.on('click', function (e) {
@@ -124,16 +136,7 @@ function generateMap(geoJsonData) {
         var content = '<div><strong>' + feature.properties.title + '</strong>' +
             '<p>' + feature.properties.description + '</p></div>';
 
-        console.log(feature.properties.title);
-        // pass in actual title. translate it to review div later.
-        // var reviewDivId = feature.properties.title.toLowerCase().replace(/ /g, '-').replace(/'/g, '');
-        // showReview(reviewDivId);
-
         showReview(feature.properties.title);
-
-        // if (feature.properties.title === "Tacos El Gordo") {
-        //   showTacos();
-        // }
 
         var dest = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
         map.setView(dest, 15);
@@ -264,15 +267,9 @@ function setMapView(destination, zoom) {
 function getDistance(destination) {
     var ctr = map.getCenter();
     var dest = destination;
-    console.log("destination: " + dest[0] + ", " + dest[1]);
-    console.log(ctr.lat + " " + ctr.lng);
     var latDiff = dest[0] - ctr.lat;
     var lngDiff = dest[1] - ctr.lng;
-    console.log(latDiff);
-    console.log(lngDiff);
-
     var distance = Math.sqrt((latDiff * latDiff) + (lngDiff * lngDiff));
-    console.log(distance);
     return distance;
 }
 

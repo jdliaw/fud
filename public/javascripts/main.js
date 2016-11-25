@@ -1,4 +1,4 @@
-showReview = function (title) { 
+showReview = function (title) {
   /* Make GET request */
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
@@ -6,6 +6,9 @@ showReview = function (title) {
       if (request.status === 200) {
         document.body.className = 'ok';
         var res = JSON.parse(request.responseText);
+        console.log(res);
+        res["price-input"] = convertToCharacters(res["price-input"], "$", "");
+        res["rating-input"] = convertToCharacters(res["rating-input"], "✮", "✩");
         setupHandlebars(title, res);
       } else {
         document.body.className = 'error';
@@ -13,9 +16,23 @@ showReview = function (title) {
     }
   };
   var url = "restaurants/" + title;
+  console.log(url);
   request.open("GET", url, true);
   request.send(null);
   /* End GET Request */
+}
+
+function convertToCharacters(rating, char1, char2) {
+  let str = "";
+  for (let i = 0; i < 5; i++) {
+    if (i < rating) {
+      str += char1;
+    }
+    else {
+      str += char2;
+    }
+  }
+  return str;
 }
 
 
